@@ -39,6 +39,6 @@ You can choose to include or exclude **National Championships** and **Under-23 r
 
 ## 📷 Preview
 
-![alt text](image.png)
+![alt text](Preview.png)
 
-Enjoy tracking your career like a pro! 🚴‍♂️💚
+Enjoy tracking your career like a pro! 🚴‍♂️💙
