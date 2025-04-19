@@ -72,7 +72,7 @@ namespace PCMDatabaseReader.Services
                     worksheet.Cell(rowNumberChampionships, 1).Style.Fill.BackgroundColor = XLColor.Red;
                     worksheet.Cell(rowNumberChampionships, 2).Value = 0;
                     worksheet.Cell(rowNumberChampionships, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    worksheet.Column(2).Width = 10;
+                    worksheet.Column(2).Width = 5;
 
                     worksheet.Column(1).AdjustToContents();
                     continue;
@@ -106,7 +106,7 @@ namespace PCMDatabaseReader.Services
                     victoryCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                     worksheet.Column(columnNumber).AdjustToContents();
-                    worksheet.Column(columnNumber + 1).Width = 10;
+                    worksheet.Column(columnNumber + 1).Width = 5;
                     row++;
                 }
 

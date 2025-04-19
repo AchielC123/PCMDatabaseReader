@@ -9,7 +9,7 @@ class Program
         // Needed to sort the races on date
         string filePathStages = "Data/PCM2024Stages.csv";  // Path to your .csv file
 
-        string outputExcelPath = "BlancoVictories.xlsx";
+        string outputExcelPath = "BlancoPalmares.xlsx";
 
         if (!File.Exists(filePathRaces) || !File.Exists(filePathStages))
         {
