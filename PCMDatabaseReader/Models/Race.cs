@@ -6,7 +6,7 @@
 
         public string RaceName { get; set; }
 
-        //public DateTime RaceDate { get; set; }
+        public DateOnly? RaceDate { get; set; }
 
         public RaceCategory RaceCategory { get; set; }
     }

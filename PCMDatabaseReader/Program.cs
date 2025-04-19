@@ -5,19 +5,23 @@ class Program
     static void Main()
     {
         // From WorldDB 2025 I think
-        string filePath = "PCM2024Races.csv";  // Path to your .csv file
+        string filePathRaces = "Data/PCM2024Races.csv";  // Path to your .csv file
+        // Needed to sort the races on date
+        string filePathStages = "Data/PCM2024Stages.csv";  // Path to your .csv file
 
-        string outputExcelPath = filePath.Replace(".csv", ".xlsx");
+        string outputExcelPath = "BlancoVictories.xlsx";
 
-        if (!File.Exists(filePath))
+        if (!File.Exists(filePathRaces) || !File.Exists(filePathStages))
         {
             Console.WriteLine("CSV file not found!");
             return;
         }
 
-        var races = CSVRacesReader.Read(filePath);
+        var races = CSVRacesReader.Read(filePathRaces);
 
-        ExcelRacesGenerator.ExportToExcel(races, outputExcelPath, "PCM2024Races");
+        races = CSVStagesReader.AddDatesToRacesListFromStagesCSV(races, filePathStages);
+
+        ExcelRacesGenerator.ExportToExcel(races, outputExcelPath);
 
         Console.WriteLine($"Excel file saved to {outputExcelPath}");
     }

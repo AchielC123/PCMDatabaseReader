@@ -20,7 +20,7 @@ namespace PCMDatabaseReader.Services
         /// <param name="includeUnder23Races">
         /// A boolean indicating whether to include under-23 category races in the export.
         /// </param>
-        public static void ExportToExcel(List<Race> races, string outputPath, string worksheetName, bool includeNationalChampionships = true, bool includeUnder23Races = true)
+        public static void ExportToExcel(List<Race> races, string outputPath, string worksheetName = "PCM2024Races", bool includeNationalChampionships = true, bool includeUnder23Races = true)
         {
             if (!includeNationalChampionships)
             {
@@ -40,7 +40,7 @@ namespace PCMDatabaseReader.Services
 
             // Sort and Group races
             var groupedRaces = races
-                .OrderBy(r => r.RaceName)
+                .OrderBy(r => r.RaceDate)
                 .GroupBy(r => r.RaceCategory)
                 .OrderBy(g => g.Key);
 

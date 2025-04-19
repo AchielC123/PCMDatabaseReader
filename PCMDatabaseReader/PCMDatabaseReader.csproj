@@ -12,7 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="PCM2024Races.csv">
+    <None Update="Data\PCM2024Races.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\PCM2024Stages.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
