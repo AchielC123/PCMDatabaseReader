@@ -74,6 +74,12 @@ namespace PCMDatabaseReader.Services
                     worksheet.Cell(rowNumberChampionships, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     worksheet.Column(2).Width = 5;
 
+                    // Conditional formatting for victories, when greater than 0 -> green
+                    worksheet.Range(worksheet.Cell(rowNumberChampionships, 1).Address, worksheet.Cell(rowNumberChampionships, 1).Address)
+                        .AddConditionalFormat()
+                        .WhenIsTrue($"{worksheet.Cell(rowNumberChampionships, 2).Address.ToStringFixed()} > 0")
+                        .Fill.SetBackgroundColor(XLColor.Green);
+
                     worksheet.Column(1).AdjustToContents();
                     continue;
                 }
@@ -109,10 +115,8 @@ namespace PCMDatabaseReader.Services
                     worksheet.Column(columnNumber + 1).Width = 5;
                     row++;
                 }
-
                 columnNumber += 2;
             }
-
             workbook.SaveAs(outputPath);
         }
     }
