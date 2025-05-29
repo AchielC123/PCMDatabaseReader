@@ -52,45 +52,43 @@ namespace PCMDatabaseReader.Services
 
             foreach (var group in groupedRaces)
             {
-                // Championships in first column under Grand Tours
+                // Championships in second column under Monuments
                 if (group.Key == RaceCategory.WorldChampionship || group.Key == RaceCategory.WorldChampionshipITT
                     || group.Key == RaceCategory.EuropeanChampionship || group.Key == RaceCategory.EuropeanChampionshipITT)
                 {
                     // Header title for Championships
                     if (rowNumberChampionships == 10)
                     {
-                        worksheet.Range(rowNumberChampionships, 1, rowNumberChampionships, 2).Merge();
-                        worksheet.Cell(rowNumberChampionships, 1).Value = "Championships:";
-                        worksheet.Cell(rowNumberChampionships, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                        worksheet.Cell(rowNumberChampionships, 1).Style.Fill.BackgroundColor = XLColor.Red;
-                        worksheet.Cell(rowNumberChampionships, 1).Style.Font.Bold = true;
+                        worksheet.Range(rowNumberChampionships, 3, rowNumberChampionships, 4).Merge();
+                        worksheet.Cell(rowNumberChampionships, 3).Value = "Championships:";
+                        worksheet.Cell(rowNumberChampionships, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Cell(rowNumberChampionships, 3).Style.Fill.BackgroundColor = XLColor.Red;
+                        worksheet.Cell(rowNumberChampionships, 3).Style.Font.Bold = true;
                     }
 
                     rowNumberChampionships++;
 
-                    worksheet.Cell(rowNumberChampionships, 1).Value = group.First().RaceName;
-                    worksheet.Cell(rowNumberChampionships, 1).Style.Fill.BackgroundColor = XLColor.Red;
-                    worksheet.Cell(rowNumberChampionships, 2).Value = 0;
-                    worksheet.Cell(rowNumberChampionships, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    worksheet.Column(2).Width = 5;
+                    worksheet.Cell(rowNumberChampionships, 3).Value = group.First().RaceName;
+                    worksheet.Cell(rowNumberChampionships, 3).Style.Fill.BackgroundColor = XLColor.Red;
+                    worksheet.Cell(rowNumberChampionships, 4).Value = 0;
+                    worksheet.Cell(rowNumberChampionships, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Column(4).Width = 5;
 
                     // Conditional formatting for victories, when greater than 0 -> green
-                    worksheet.Range(worksheet.Cell(rowNumberChampionships, 1).Address, worksheet.Cell(rowNumberChampionships, 1).Address)
+                    worksheet.Range(worksheet.Cell(rowNumberChampionships, 3).Address, worksheet.Cell(rowNumberChampionships, 3).Address)
                         .AddConditionalFormat()
-                        .WhenIsTrue($"{worksheet.Cell(rowNumberChampionships, 2).Address.ToStringFixed()} > 0")
+                        .WhenIsTrue($"{worksheet.Cell(rowNumberChampionships, 4).Address.ToStringFixed()} > 0")
                         .Fill.SetBackgroundColor(XLColor.Green);
 
-                    worksheet.Column(1).AdjustToContents();
+                    worksheet.Column(3).AdjustToContents();
                     continue;
                 }
 
                 //Headers
                 worksheet.Range(1, columnNumber, 1, columnNumber + 1).Merge();
                 worksheet.Cell(1, columnNumber).Value = group.First().RaceCategory.GetDisplayName();
-                worksheet.Cell(1, columnNumber).Style.Fill.BackgroundColor = XLColor.Red;
-                worksheet.Cell(1, columnNumber).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Cell(1, columnNumber).Style.Font.Bold = true;
-
+                ApplyCellStyle(worksheet.Cell(1, columnNumber), XLColor.Red, true, XLAlignmentHorizontalValues.Center);
+               
                 //Races
                 int row = 2;
                 foreach (var race in group)
@@ -98,7 +96,40 @@ namespace PCMDatabaseReader.Services
                     var raceNameCell = worksheet.Cell(row, columnNumber);
                     var victoryCell = worksheet.Cell(row, columnNumber + 1);
 
+                    if (group.Key == RaceCategory.GrandTour)
+                    {
+                        worksheet.Range(raceNameCell.Address, victoryCell.Address).Merge();
+                        raceNameCell.Value = race.RaceName;
+                        ApplyCellStyle(raceNameCell, XLColor.Red, true, XLAlignmentHorizontalValues.Center);
+
+                        var grandTourCategories = new[] { "GC", "PTS", "MTN", "U25", "Stages" };
+                        foreach (var category in grandTourCategories)
+                        {
+                            var categoryCell = raceNameCell.CellBelow();
+                            categoryCell.Value = $"{race.RaceName} {category}";
+                            ApplyCellStyle(categoryCell, XLColor.Red, false, XLAlignmentHorizontalValues.Center);
+
+                            var victoryCategoryCell = categoryCell.CellRight();
+                            victoryCategoryCell.Value = 0;
+                            victoryCategoryCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                            worksheet.Range(categoryCell.Address, categoryCell.Address)
+                                .AddConditionalFormat()
+                                .WhenIsTrue($"{victoryCategoryCell.Address.ToStringFixed()} > 0")
+                                .Fill.SetBackgroundColor(XLColor.Green);
+
+                            raceNameCell = categoryCell;
+                        }
+
+                        worksheet.Column(columnNumber).AdjustToContents();
+                        worksheet.Column(columnNumber + 1).Width = 5;
+
+                        row += grandTourCategories.Length + 1;
+                        continue;
+                    }
+
                     raceNameCell.Value = race.RaceName;
+
                     //Default background red -> zero victories
                     raceNameCell.Style.Fill.BackgroundColor = XLColor.Red;
 
@@ -118,6 +149,13 @@ namespace PCMDatabaseReader.Services
                 columnNumber += 2;
             }
             workbook.SaveAs(outputPath);
+        }
+
+        private static void ApplyCellStyle(IXLCell cell, XLColor backgroundColor, bool bold, XLAlignmentHorizontalValues alignment)
+        {
+            cell.Style.Fill.BackgroundColor = backgroundColor;
+            cell.Style.Font.Bold = bold;
+            cell.Style.Alignment.Horizontal = alignment;
         }
     }
 }
